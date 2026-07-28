@@ -54,7 +54,7 @@ Everything career-ops already does — scoring, tailoring, cover letter generati
 
 - A working [career-ops](https://github.com/santifer/career-ops) checkout
 - Python 3.10+ with `pip`
-- An AI coding CLI: [opencode](https://opencode.ai), [Claude Code](https://claude.com/claude-code), [Codex](https://openai.com/index/introducing-codex), or [Kimi](https://kimi.com/) — whichever you already use with career-ops
+- An AI coding CLI: [opencode](https://opencode.ai), [Claude Code](https://claude.com/claude-code), [Codex](https://openai.com/codex/), [Ollama](https://ollama.com/), or [Kimi](https://kimi.com/) — whichever you already use with career-ops
 - [Kimi Webbridge](https://kimi.com/) browser extension for the form-fill step
 - (Optional) An LLM backend for KB intent normalization — shells out to `opencode run` by default; see [Configuration](#configuration)
 
@@ -251,8 +251,8 @@ paths:
   pipeline_tsv: "../../data/pipeline.tsv"      # career-ops's tracker
 
 llm:
-  backend: "opencode"                          # or "kimi" | "anthropic"
-  model: "kimi-k2"
+  backend: "opencode"                          # or codex | ollama | command | kimi | anthropic
+  model: ""
   temperature: 0.1
 
 kimi_webbridge:
@@ -266,9 +266,24 @@ Switch LLM backend via env var:
 export APPLY_LLM_BACKEND=kimi         # requires MOONSHOT_API_KEY
 export APPLY_LLM_BACKEND=anthropic    # requires ANTHROPIC_API_KEY
 export APPLY_LLM_BACKEND=opencode     # default; shells to `opencode run --stdin`
+
+# Codex CLI: reuses your existing `codex` login
+export APPLY_LLM_BACKEND=codex
+export APPLY_LLM_MODEL=""              # optional; empty uses your Codex default
+
+# Ollama: local API by default
+export APPLY_LLM_BACKEND=ollama
+export APPLY_LLM_MODEL=qwen3:8b        # use any model you already pulled
+export OLLAMA_HOST=http://localhost:11434
+
+# Any other CLI that reads a prompt from stdin and prints its answer to stdout
+export APPLY_LLM_BACKEND=command
+export APPLY_LLM_COMMAND="your-cli --your-flags"
 ```
 
-Backends are defined in `lib/llm.py` — add your own by editing the `call()` function.
+The Codex backend uses an ephemeral, read-only `codex exec` session. The
+generic command backend runs without a shell, so quoted arguments are supported
+without shell interpolation.
 
 ## Troubleshooting
 
