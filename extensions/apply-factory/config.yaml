@@ -9,8 +9,8 @@ paths:
   pipeline_tsv: "../../data/pipeline.tsv"
 
 llm:
-  backend: "opencode"
-  model: "kimi-k2"
+  backend: "opencode"  # opencode | codex | ollama | command | kimi | anthropic
+  model: ""
   temperature: 0.1
 
 kimi_webbridge:
